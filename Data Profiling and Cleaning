@@ -1,0 +1,55 @@
+PROJECT DOCUMENTATION: PHASE 1 – FOUNDATION & EXPLORATION
+Project Title: 12-Table Enterprise Data Model Optimization
+Author: Data Analytics Team
+Date: October 2026
+Environment: Power BI Desktop / Power Query Editor
+1. PROJECT OVERVIEW & OBJECTIVE
+The primary objective of this project phase (Weeks 1–3) was to profile, validate, and integrate 12 separate structured data files into a high-performance, fully optimized Star Schema data model inside Power BI. This foundational setup guarantees rapid DAX engine processing, reliable filter propagation, and a clean directory for future executive report visualization.
+2. DATA QUALITY AUDIT & TRANSFORMS
+A comprehensive data profiling audit was conducted across all 12 tables using the Power Query Editor data profiling suite. The source files demonstrated an exceptionally high tier of baseline data integrity.
+•	Data Quality Validation: Audited via the Column Quality tool. All core columns returned a metric of 100% Valid, 0% Empty, and 0% Errors, confirming total data completeness right from the source.
+•	Structural Health: Designated Primary Keys across all lookup dimensions were profiled and verified to have 100% distinct and unique values, preventing any integrity faults across data relationships.
+•	Applied Transformations (Visual Standardization): Because the structural data arrived in a pristine state, the only transformations applied were text polish operations. The 'Capitalize Each Word' function was systematically deployed on text fields (such as client names and geographic operating regions) to establish a uniform casing format across future dashboard visuals.
+3. MASTER DATA DICTIONARY LOG
+A. Customer Lookup Master (customers)
+Table Type: Dimension (Lookup Table)
+Description: Stores master demographic profiles for all registered organizational clients.
+•	CustomerID (Text | Primary Key):  Unique alphanumeric identifier for each client. Audited to ensure 100% uniqueness.
+•	CustomerName (Text):  Full corporate name of the client. Transformed using 'Capitalize Each Word'.
+•	Region (Text):  Geographic operating territory. Transformed for uniform text casing.
+B. Sales Order Lines Transaction Ledger (sales_orders_line)
+Table Type: Fact (Transactional Table)
+Description: Granular line-item records tracking individual product orders.
+•	SalesOrderLineID (Text | Primary Key):  Unique row identifier.
+•	SO_ID (Text | Foreign Key):  Synced and standardized to match the sales header table.
+•	ProductID (Text | Foreign Key):  Connects directly to the product master table.
+•	Quantity (Whole Number):  Number of units ordered per row.
+•	Line Total (Currency):  Pre-calculated gross transactional value imported directly from the source.
+•	Line Grand Total (Currency):  Pre-calculated final transactional value inclusive of adjustments.
+4. ANALYTICAL DATA MODEL & RELATIONSHIP STRATEGY
+To ensure high-speed DAX calculations and prevent ambiguous query pathways, the 12 files were integrated utilizing a strict Star Schema architecture.
+•	Cardinality & Direction: Relationships are strictly structured as One-to-Many (1:*), flowing from master lookup tables down to transactional fact ledgers.
+•	Filter Propagation: Cross-filter directions are set to 'Single' to ensure a deterministic, predictable flow of filtering data and avoid cyclic dependencies or calculation overhead.
+From Source Table (1)	From Key Field	To Destination Table (*)	To Key Field	Relationship Type	Cross-Filter Direction
+customers	CustomerID	sales_order_heading	CustomerID	One-to-Many (1:*)	Single
+branches	BranchID	sales_order_heading	BranchID	One-to-Many (1:*)	Single
+suppliers	SupplierID	purchase_orders_header	SupplierID	One-to-Many (1:*)	Single
+products	ProductID	sales_orders_line	ProductID	One-to-Many (1:*)	Single
+products	ProductID	purchase_orders_lines	ProductID	One-to-Many (1:*)	Single
+products	ProductID	stock_ledger	ProductID	One-to-Many (1:*)	Single
+inventory_master	ProductID	stock_ledger	ProductID	One-to-Many (1:*)	Single
+customers	CustomerID	invoices	CustomerID	One-to-Many (1:*)	Single
+customers	CustomerID	payments	CustomerID	One-to-Many (1:*)	Single
+sales_order_heading	SO_ID	sales_orders_line	SO_ID	One-to-Many (1:*)	Single
+purchase_orders_header	PurchaseOrderID	purchase_orders_lines	PurchaseOrderID	One-to-Many (1:*)	Single
+Calendar	Date	sales_order_heading	OrderDate	One-to-Many (1:*)	Single
+Calendar	Date	purchase_orders_header	PurchaseDate	One-to-Many (1:*)	Single
+
+5. REVENUE DAX MEASURES SPECIFICATION
+A dedicated, isolated directory table (_Measures) was initiated to house business logic. The foundational revenue calculations utilize vertical column aggregations over the pre-calculated source data:
+1. Gross Revenue Metric
+Gross Revenue = SUM('sales_orders_line'[Line Total])
+Description: Sums baseline transaction values across all rows before adjustments.
+2. Total Net Revenue Metric
+Total Net Revenue = SUM('sales_orders_line'[Line Grand Total])
+Description: Summarizes final adjusted revenue invoiced to customers, forming the baseline for top-line corporate profitability tracking.
