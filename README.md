@@ -9,11 +9,9 @@ A real-world business analytics project focused on supplier, inventory, warehous
 
 ## Project Phases
 - **Week 1:** Data Profiling & Cleaning
-- **Week 2:** Data Integration, Feature Engineering, Data Dictionary & First KPIs
-- **Week 3:** Analysis, Dashboard & Business Insights
 
 ## Dataset
-The project contains 12 structured business tables covering customers, products, branches, suppliers, inventory, sales, purchases, invoices, payments, and stock movements.
+The project contains 12 structured business tables covering customers, products, branches, suppliers, inventory_master, sales _order_header, sales_order_line, purchases_order_header, purchases_order_line,invoices, payments, and stock ledger.
 
 ## Goal
 To build a clean, reliable, and analysis-ready business data model that supports data-driven decision-making.
