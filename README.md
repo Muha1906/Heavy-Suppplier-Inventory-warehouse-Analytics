@@ -6,7 +6,7 @@ A real-world business analytics project focused on supplier, inventory, warehous
 ## Tools
 - Power BI
 - Power Query
-- 
+
 ## Project Phases
 - **Week 1:** Data Profiling & Cleaning
 - **Week 2:** Data Integration, Feature Engineering, Data Dictionary & First KPIs
